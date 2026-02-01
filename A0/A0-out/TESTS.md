@@ -5,9 +5,7 @@ Use the table below to describe your test cases. Each row should describe one te
 | Test name | Setup (steps) | Operation | Expected result | Exception? |
 | --- | --- | --- | --- | --- |
 | size on empty list | create empty list | size() | 0 | n/a |
-| --- | --- | --- | --- | --- |
 | size on non-empty list | create empty list, add two items | size() | 2 | n/a |
-| --- | --- | --- | --- | --- |
 | isEmpty on empty list | create empty list | isEmpty() | true | n/a |
 | --- | --- | --- | --- | --- |
 | isEmpty on non-empty list | create empty list, add an item | isEmpty() | false | n/a |
