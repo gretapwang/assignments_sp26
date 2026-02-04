@@ -1,8 +1,7 @@
 /**
- * Interface to describe a list, which stores objects of a certain type in a sequence. 
- * To initialize a list, we need to specify the type of its elements. 
- * Lists are created empty, with capacity zero. As elements are added/removed, 
- * they shift positions and the list is resized so that there are never empty spots.
+ * Interface to describe a list, which stores objects of a certain type in a sequence 
+ * To initialize a list, we need to specify the type of its elements
+ * Lists are created empty, with initial capacity 10
  */
 interface ListADT<T> {
     
@@ -28,7 +27,8 @@ interface ListADT<T> {
     public T get(int index);
 
     /**
-     * Adds the given object to the list at the specified position
+     * Adds the given object to the list at the specified position, increasing capacity if needed
+     * For all elements at or later than that position, increases their indices by 1
      * Throws IndexOutOfBoundsException if the index is less than zero,
      * or greater than the list's size
      * @param element The object to add
@@ -38,6 +38,7 @@ interface ListADT<T> {
 
     /**
      * Removes the element at the given position in the list
+     * For all elements later in the list, decreases their indices by 1
      * Throws IndexOutOfBoundsException if the index is less than zero,
      * or greater than or equal to the list's size
      * @param index The position to remove an element
