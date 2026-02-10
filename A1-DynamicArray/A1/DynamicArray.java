@@ -1,10 +1,13 @@
 /**
- * TODO: Describe what this class represents and how it works at a high level
+ * Stores objects in an ordered sequence. Elements can be accessed by index, added, and removed.
  *
- * @param <T> TODO: Describe what type of elements this class can store
- * @author TODO
+ * @param <T> The type of element stored in the list. Can be any Object
+ * @author Greta Wang
  */
-public class DynamicArray<T> {
+public class DynamicArray<T> implements ListADT<T> {
+
+    private T[] elements; // Array used to store the elements
+    private int size; // Number of elements
 
     /**
      * Creates a new generic array of the given capacity.
@@ -19,5 +22,331 @@ public class DynamicArray<T> {
     @SuppressWarnings("unchecked")
     private T[] makeArray(int capacity) {
         return (T[]) new Object[capacity];
+    }
+
+    /**
+     * Constructor creates an empty DynamicArray with the specified initial capacity.
+     * 
+     * @param capacity Initial capacity
+     * @throws RuntimeException If given a negative capacity
+     */
+    public DynamicArray(int capacity) {
+        if (capacity < 0) {
+            throw new RuntimeException("Cannot create array with negative capacity");
+        }
+        this.elements = makeArray(capacity);
+        this.size = 0;
+    }
+
+    /**
+     * Copy constructor creates a deep copy of the given DynamicArray.
+     * 
+     * @param original The list to copy
+     */
+    public DynamicArray(DynamicArray<T> original) {
+        this.elements = makeArray(original.size());
+        this.size = original.size();
+        original.copyElements(this.elements, 0, original.size(), 0);
+    }
+
+    /**
+     * Getter for size.
+     * 
+     * @return The number of elements in the list
+     */
+    public int size() {
+        return this.size;
+    }
+
+    /**
+     * Determines whether the list is empty.
+     * 
+     * @return True if there are no elements, false otherwise
+     */
+    public boolean isEmpty() {
+        return this.size() == 0;
+    }
+
+    /**
+     * Returns the element at the specified index.
+     * 
+     * @param index The index to access
+     * @return The element at the index
+     * @throws IndexOutOfBoundsException For index < 0 or index >= size
+     */
+    public T get(int index) {
+        this.checkIndex(index);
+        return this.elements[index];
+    }
+
+    /**
+     * Sets the value at the specified index to the given object. Returns the previous value.
+     * 
+     * @param index The index to update
+     * @param value The new value to set
+     * @return The index's previous value
+     * @throws IndexOutOfBoundsException For index < 0 or index >= size
+     */
+    public T set(int index, T value) {
+        this.checkIndex(index);
+        T previousValue = this.elements[index];
+        this.elements[index] = value;
+        return previousValue;
+    }
+
+    /**
+     * Inserts the given object at the specified index. Shifts all subsequent elements to the right.
+     * 
+     * @param index The index to insert at
+     * @param value The object to insert 
+     * @throws IndexOutOfBoundsException For index < 0 or index > size
+     */
+    public void add (int index, T value) {
+        this.checkIndexInclusive(index);
+        if (this.size < this.elements.length) { // if capacity increase not needed, shift elements over w/o replacing array
+            for (int i = this.size() - 1; i >= index; i--) {
+                this.elements[i + 1] = this.elements[i];
+            }
+            this.elements[index] = value;
+        } else { // replace array if needed
+            T[] temp = makeArray(this.elements.length + 1);
+            this.copyElements(temp, 0, index, 0);
+            temp[index] = value;
+            this.copyElements(temp, index, this.size(), 1);
+            this.elements = temp;
+        }
+        this.size += 1; // update size attribute
+    }
+
+    /**
+     * Overloaded add() which adds the given object at the end of the list.
+     * 
+     * @param value The object to add
+     */
+    public void add(T value) {
+        this.add(this.size(), value);
+    }
+
+    /**
+     * Removes and returns the element at the specified index. Shifts all subsequent elements to the left.
+     * 
+     * @param index The index of the element to remove
+     * @return The removed element
+     * @throws IndexOutOfBoundsException For index < 0 or index >= size
+     */
+    public T remove(int index) {
+        this.checkIndex(index);
+        T removedElement = this.elements[index];
+        this.copyElements(this.elements, index + 1, this.size(), -1); // shift elements to the left
+        this.elements[this.size() - 1] = null;
+        this.size -= 1; // update size attribute
+        return removedElement;
+    }
+
+    /**
+     * Returns a cleanly formatted String listing the elements in order.
+     * 
+     * @return String containing the elements
+     */
+    public String toString() {
+        String formattedList;
+        if (this.isEmpty()) {
+            formattedList = "[]";
+        } else {
+            formattedList = "[" + this.elements[0];
+            for (int i = 1; i < this.size(); i++) {
+                formattedList += (", " + this.elements[i]);
+            }
+            formattedList += "]";
+        }
+        return formattedList;
+    }
+
+    /**
+     * Returns a DynamicArray formed by concatenating the given DynamicArray onto the current one. 
+     * 
+     * @param array2 The list to add on the end
+     * @return The concatenated list
+     */
+    public DynamicArray<T> append(DynamicArray<T> array2) {
+        return this.addAll(this.size(), array2);
+    }
+
+    /**
+     * Returns a DynamicArray formed by inserting the given DynamicArray into the current one 
+     * at the specified index.
+     * 
+     * @param index The index to insert at
+     * @param array2 The list to insert
+     * @return The list with new elements inserted
+     * @throws IndexOutOfBoundsException For index < 0 or index > size
+     */
+    public DynamicArray<T> addAll(int index, DynamicArray<T> array2) {
+        this.checkIndexInclusive(index);
+        DynamicArray<T> newArray = new DynamicArray<T>(this); // copy the current DynamicArray, then add elements from the other
+        for (int i = 0; i < array2.size(); i++) {
+            newArray.add(index + i, array2.get(i));
+        }
+        return newArray;
+    }
+
+    /**
+     * Returns a DynamicArray containing the elements of the current DynamicArray at the specified index and later.
+     * 
+     * @param index The index to split at
+     * @return The later section of the list
+     * @throws IndexOutOfBoundsException For index < 0 or index > size
+     */
+    public DynamicArray<T> splitSuffix(int index) {
+        // delete() throws the IndexOutOfBoundsException
+        return this.delete(0, index);
+    }
+
+    /**
+     * Returns a DynamicArray containing the elements of the current DynamicArray up to the specified index, exclusive.
+     * 
+     * @param index The index to split at
+     * @return The first section of the list
+     * @throws IndexOutOfBoundsException For index < 0 or index > size
+     */
+    public DynamicArray<T> splitPrefix(int index) {
+        // delete() throws the IndexOutOfBoundsException
+        return this.delete(index, this.size());
+    }
+
+    /**
+     * Returns a DynamicArray containing the elements of the current DynamicArray, except for those in the specified range, 
+     * inclusive to exclusive.
+     * 
+     * @param fromIndex The starting index for the deleted range, included
+     * @param toIndex The ending index for the deleted range, excluded
+     * @return The new list with items removed
+     * @throws IndexOutOfBoundsException If indices do not satisfy 0 <= fromIndex <= toIndex <= size
+     */
+    public DynamicArray<T> delete(int fromIndex, int toIndex) {
+        if (fromIndex < 0 || fromIndex > toIndex || toIndex > this.size()) {
+            throw new IndexOutOfBoundsException();
+        }
+        DynamicArray<T> newArray = new DynamicArray<T>(this); // copy the DynamicArray, then remove elements
+        for (int i = 0; i < toIndex - fromIndex; i++) {
+            newArray.remove(fromIndex);
+        }
+        return newArray;
+    }
+
+    /**
+     * Returns a DynamicArray containing the elements of the current DynamicArray within the specified range, 
+     * inclusive to exclusive.
+     * 
+     * @param fromIndex The starting index for the extracted range, included
+     * @param toIndex The ending index for the extracted range, excluded
+     * @return The extracted list
+     * @throws IndexOutOfBoundsException If indices do not satisfy 0 <= fromIndex <= toIndex <= size
+     */
+    public DynamicArray<T> extract(int fromIndex, int toIndex) {
+        // delete() throws the IndexOutOfBoundsException
+        return this.delete(0, fromIndex).delete(toIndex - fromIndex, this.size() - fromIndex);
+    }
+
+    /**
+     * Helper method to check that an index is valid, i.e. 0 <= index < size.
+     * 
+     * @param index The index to check
+     * @throws IndexOutOfBoundsException For index < 0 or index >= size
+     */
+    private void checkIndex(int index) {
+        if (index < 0 || index >= this.size()) {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    /**
+     * Helper method to check that an index is valid, where index = size is considered valid.
+     * 
+     * @param index The index to check
+     * @throws IndexOutOfBoundsException For index < 0 or index > size
+     */
+    private void checkIndexInclusive(int index) {
+        if (index < 0 || index > this.size()) {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    /**
+     * Helper method to take the elements in a specified range (inclusive to exclusive) and set them in a given 
+     * native array, shifting the position of the elements in the array as specified.
+     * 
+     * @param array The array to modify
+     * @param fromIndex The starting index in the DynamicArray for the copied range, included
+     * @param toIndex The ending index in the DynamicArray for the copied range, excluded
+     * @param shift The change in each element's index between the DynamicArray and the passed array
+     * @throws IndexOutOfBoundsException If the original index range is invalid for the DynamicArray, or the shifted range is invalid for the array
+     */
+    private void copyElements(T[] array, int fromIndex, int toIndex, int shift) {
+        if (fromIndex < 0 || fromIndex > toIndex || toIndex > this.size() || fromIndex + shift < 0 || toIndex + shift > array.length) {
+            throw new IndexOutOfBoundsException();
+        }
+        for (int i = fromIndex; i < toIndex; i++) {
+            array[i + shift] = this.get(i);
+        }
+    }
+
+    public static void main(String[] args) {
+        DynamicArray<Integer> array = new DynamicArray<Integer>(3);
+        System.out.println(array);
+        System.out.println("size: " + array.size() + ", empty: " + array.isEmpty());
+
+        System.out.println("\nAdding items...");
+        array.add(1);
+        array.add(1,3);
+        array.add(1,2);
+        array.add(3,4);
+        System.out.println(array);
+        System.out.println("size: " + array.size() + ", empty: " + array.isEmpty());
+
+        System.out.println("Item at index 1: " + array.get(1));
+        System.out.println("Item at index 3: " + array.get(3));
+
+        System.out.println("\nSetting index 2 to 10");
+        array.set(2,10);
+        System.out.println(array);
+        System.out.println("size: " + array.size() + ", empty: " + array.isEmpty());
+
+        System.out.println("\nRemoving " + array.remove(3));
+        System.out.println("Removing " + array.remove(0));
+        System.out.println(array);
+        System.out.println("size: " + array.size() + ", empty: " + array.isEmpty());
+
+        DynamicArray<Integer> copyArray = new DynamicArray<Integer>(array);
+        System.out.println("\nCopy: " + copyArray);
+        System.out.println("Changing copy to all zeros...");
+        copyArray.set(0,0);
+        copyArray.set(1,0);
+        System.out.println("Copy: " + copyArray);
+        System.out.println("Original: " + array);
+
+        System.out.println("\nTesting whole array operations");
+        DynamicArray<String> array1 = new DynamicArray<String>(1);
+        array1.add("a");
+        array1.add("b");
+        array1.add("c");
+        array1.add("d");
+        array1.add("e");
+        System.out.println("Array 1: " + array1);
+        DynamicArray<String> array2 = new DynamicArray<String>(1);
+        array2.add("A");
+        array2.add("B");
+        array2.add("C");
+        array2.add("D");
+        array2.add("E");
+        System.out.println("Array 2: " + array2);
+        System.out.println("Appending 2 onto 1: " + array1.append(array2));
+        System.out.println("Inserting 2 into 1 at index 3: " + array1.addAll(3, array2));
+        System.out.println("Indices 3 and later: " + array1.splitSuffix(3));
+        System.out.println("Indices before 3: " + array1.splitPrefix(3));
+        System.out.println("Deleting indices 1 up to 4: " + array1.delete(1, 4));
+        System.out.println("Extracting indices 1 up to 4: " + array1.extract(1, 4));
+
+        System.out.println("\nChecking originals are unchanged: Array 1 = " + array1 + ", Array 2 = " + array2);
     }
 }

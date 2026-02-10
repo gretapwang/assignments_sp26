@@ -1,47 +1,58 @@
 /**
- * Interface to describe a list, which stores objects of a certain type in a sequence 
- * To initialize a list, we need to specify the type of its elements
- * Lists are created empty, with initial capacity 10
+ * Interface to describe a list, which stores objects in an ordered sequence. The order cannot change on its own.
+ * To initialize a list, we need to specify the type of its elements and an initial capacity.
+ * Lists are created empty. We can then add any number of elements.
  */
 interface ListADT<T> {
     
     /**
-     * Returns the number of elements in the list
-     * @return The number of elements
+     * Getter for size.
+     * 
+     * @return The number of elements in the list
      */
     public int size();
 
     /**
-     * Determines whether the list is empty
-     * @return True if there are no elements in the list, false otherwise
+     * Determines whether the list is empty.
+     * 
+     * @return True if there are no elements, false otherwise
      */
     public boolean isEmpty();
 
     /**
-     * Returns the element at the given position in the list
-     * Throws IndexOutOfBoundsException if the index is less than zero,
-     * or greater than or equal to the list's size
-     * @param index The position to access
-     * @return The element at the given position
+     * Returns the element at the specified index.
+     * 
+     * @param index The index to access
+     * @return The element at the index
+     * @throws IndexOutOfBoundsException For index < 0 or index >= size
      */
     public T get(int index);
 
     /**
-     * Adds the given object to the list at the specified position, increasing capacity if needed
-     * For all elements at or later than that position, increases their indices by 1
-     * Throws IndexOutOfBoundsException if the index is less than zero,
-     * or greater than the list's size
-     * @param element The object to add
-     * @param index The position to insert the object
+     * Sets the value at the specified index to the given object. Returns the previous value.
+     * 
+     * @param index The index to update
+     * @param value The new value to set
+     * @return The index's previous value
+     * @throws IndexOutOfBoundsException For index < 0 or index >= size
      */
-    public void insert(T element, int index);
+    public T set(int index, T value);
 
     /**
-     * Removes the element at the given position in the list
-     * For all elements later in the list, decreases their indices by 1
-     * Throws IndexOutOfBoundsException if the index is less than zero,
-     * or greater than or equal to the list's size
-     * @param index The position to remove an element
+     * Inserts the given object at the specified index. Shifts all subsequent elements to the right.
+     * 
+     * @param index The index to insert at
+     * @param value The object to insert 
+     * @throws IndexOutOfBoundsException For index < 0 or index > size
      */
-    public void remove(int index);
+    public void add(int index, T value);
+
+    /**
+     * Removes and returns the element at the specified index. Shifts all subsequent elements to the left.
+     * 
+     * @param index The index of the element to remove
+     * @return The removed element
+     * @throws IndexOutOfBoundsException For index < 0 or index >= size
+     */
+    public T remove(int index);
 }
