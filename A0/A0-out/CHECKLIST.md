@@ -13,13 +13,13 @@ your work, please indicate the status of each item
 
 YES 1 pt: ListADT includes Javadoc describing its purpose
 
-YES 1 pt: Javadoc specifies assumptions about how ListADT object is created
+REVISED 1 pt: Javadoc specifies assumptions about how ListADT object is created
 
 YES 1 pt: Correct call signatures for all required ListADT methods
 
 YES 1 pt: Javadoc included for all ListADT methods describes what they do and any restrictions on their use
 
-YES 1 pt: Methods that might throw an exception are identified in Javadoc
+REVISED 1 pt: Methods that might throw an exception are identified in Javadoc
 
 YES 1 pt: TESTS.md includes a table of edge-case tests
 
