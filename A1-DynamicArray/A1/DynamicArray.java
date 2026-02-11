@@ -73,7 +73,7 @@ public class DynamicArray<T> implements ListADT<T> {
      * 
      * @param index The index to access
      * @return The element at the index
-     * @throws IndexOutOfBoundsException For index < 0 or index >= size
+     * @throws IndexOutOfBoundsException For index less than 0 or greater than/equal to size
      */
     public T get(int index) {
         this.checkIndex(index);
@@ -86,7 +86,7 @@ public class DynamicArray<T> implements ListADT<T> {
      * @param index The index to update
      * @param value The new value to set
      * @return The index's previous value
-     * @throws IndexOutOfBoundsException For index < 0 or index >= size
+     * @throws IndexOutOfBoundsException For index less than 0 or greater than/equal to size
      */
     public T set(int index, T value) {
         this.checkIndex(index);
@@ -100,7 +100,7 @@ public class DynamicArray<T> implements ListADT<T> {
      * 
      * @param index The index to insert at
      * @param value The object to insert 
-     * @throws IndexOutOfBoundsException For index < 0 or index > size
+     * @throws IndexOutOfBoundsException For index less than 0 or greater than size
      */
     public void add (int index, T value) {
         this.checkIndexInclusive(index);
@@ -133,7 +133,7 @@ public class DynamicArray<T> implements ListADT<T> {
      * 
      * @param index The index of the element to remove
      * @return The removed element
-     * @throws IndexOutOfBoundsException For index < 0 or index >= size
+     * @throws IndexOutOfBoundsException For index less than 0 or greater than/equal to size
      */
     public T remove(int index) {
         this.checkIndex(index);
@@ -180,7 +180,7 @@ public class DynamicArray<T> implements ListADT<T> {
      * @param index The index to insert at
      * @param array2 The list to insert
      * @return The list with new elements inserted
-     * @throws IndexOutOfBoundsException For index < 0 or index > size
+     * @throws IndexOutOfBoundsException For index less than 0 or greater than size
      */
     public DynamicArray<T> addAll(int index, DynamicArray<T> array2) {
         this.checkIndexInclusive(index);
@@ -198,7 +198,7 @@ public class DynamicArray<T> implements ListADT<T> {
      * 
      * @param index The index to split at
      * @return The later section of the list
-     * @throws IndexOutOfBoundsException For index < 0 or index > size
+     * @throws IndexOutOfBoundsException For index less than 0 or greater than size
      */
     public DynamicArray<T> splitSuffix(int index) {
         // delete() throws the IndexOutOfBoundsException
@@ -211,7 +211,7 @@ public class DynamicArray<T> implements ListADT<T> {
      * 
      * @param index The index to split at
      * @return The first section of the list
-     * @throws IndexOutOfBoundsException For index < 0 or index > size
+     * @throws IndexOutOfBoundsException For index less than 0 or greater than size
      */
     public DynamicArray<T> splitPrefix(int index) {
         // delete() throws the IndexOutOfBoundsException
@@ -225,7 +225,7 @@ public class DynamicArray<T> implements ListADT<T> {
      * @param fromIndex The starting index for the deleted range, included
      * @param toIndex The ending index for the deleted range, excluded
      * @return The new list with items removed
-     * @throws IndexOutOfBoundsException If indices do not satisfy 0 <= fromIndex <= toIndex <= size
+     * @throws IndexOutOfBoundsException If indices do not satisfy 0 ≤ fromIndex ≤ toIndex ≤ size
      */
     public DynamicArray<T> delete(int fromIndex, int toIndex) {
         if (fromIndex < 0 || fromIndex > toIndex || toIndex > this.size()) {
@@ -245,7 +245,7 @@ public class DynamicArray<T> implements ListADT<T> {
      * @param fromIndex The starting index for the extracted range, included
      * @param toIndex The ending index for the extracted range, excluded
      * @return The extracted list
-     * @throws IndexOutOfBoundsException If indices do not satisfy 0 <= fromIndex <= toIndex <= size
+     * @throws IndexOutOfBoundsException If indices do not satisfy 0 ≤ fromIndex ≤ toIndex ≤ size
      */
     public DynamicArray<T> extract(int fromIndex, int toIndex) {
         // delete() throws the IndexOutOfBoundsException
@@ -253,10 +253,10 @@ public class DynamicArray<T> implements ListADT<T> {
     }
 
     /**
-     * Helper method to check that an index is valid, i.e. 0 <= index < size.
+     * Helper method to check that an index is valid, i.e. in the range [0, size).
      * 
      * @param index The index to check
-     * @throws IndexOutOfBoundsException For index < 0 or index >= size
+     * @throws IndexOutOfBoundsException For index less than 0 or greater than/equal to size
      */
     private void checkIndex(int index) {
         if (index < 0 || index >= this.size()) {
@@ -268,7 +268,7 @@ public class DynamicArray<T> implements ListADT<T> {
      * Helper method to check that an index is valid, where index = size is considered valid.
      * 
      * @param index The index to check
-     * @throws IndexOutOfBoundsException For index < 0 or index > size
+     * @throws IndexOutOfBoundsException For index less than 0 or greater than size
      */
     private void checkIndexInclusive(int index) {
         if (index < 0 || index > this.size()) {
