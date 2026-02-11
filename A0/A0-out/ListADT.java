@@ -24,7 +24,7 @@ interface ListADT<T> {
      * 
      * @param index The index to access
      * @return The element at the index
-     * @throws IndexOutOfBoundsException For index < 0 or index >= size
+     * @throws IndexOutOfBoundsException For index less than 0 or greater than/equal to size
      */
     public T get(int index);
 
@@ -34,7 +34,7 @@ interface ListADT<T> {
      * @param index The index to update
      * @param value The new value to set
      * @return The index's previous value
-     * @throws IndexOutOfBoundsException For index < 0 or index >= size
+     * @throws IndexOutOfBoundsException For index less than 0 or greater than/equal to size
      */
     public T set(int index, T value);
 
@@ -43,7 +43,7 @@ interface ListADT<T> {
      * 
      * @param index The index to insert at
      * @param value The object to insert 
-     * @throws IndexOutOfBoundsException For index < 0 or index > size
+     * @throws IndexOutOfBoundsException For index less than 0 or greater than size
      */
     public void add(int index, T value);
 
@@ -52,7 +52,7 @@ interface ListADT<T> {
      * 
      * @param index The index of the element to remove
      * @return The removed element
-     * @throws IndexOutOfBoundsException For index < 0 or index >= size
+     * @throws IndexOutOfBoundsException For index less than 0 or greater than/equal to size
      */
     public T remove(int index);
 }
