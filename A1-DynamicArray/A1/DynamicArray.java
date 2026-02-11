@@ -6,7 +6,7 @@
  */
 public class DynamicArray<T> implements ListADT<T> {
 
-    private T[] elements; // Array used to store the elements
+    private T[] data; // Array used to store the elements
     private int size; // Number of elements
 
     /**
@@ -34,7 +34,7 @@ public class DynamicArray<T> implements ListADT<T> {
         if (capacity < 0) {
             throw new RuntimeException("Cannot create array with negative capacity");
         }
-        this.elements = makeArray(capacity);
+        this.data = makeArray(capacity);
         this.size = 0;
     }
 
@@ -44,9 +44,9 @@ public class DynamicArray<T> implements ListADT<T> {
      * @param original The list to copy
      */
     public DynamicArray(DynamicArray<T> original) {
-        this.elements = makeArray(original.size());
+        this.data = makeArray(original.size());
         this.size = original.size();
-        original.copyElements(this.elements, 0, original.size(), 0);
+        original.copyElements(this.data, 0, original.size(), 0); // sets all elements of original into backing array of copy
     }
 
     /**
@@ -76,7 +76,7 @@ public class DynamicArray<T> implements ListADT<T> {
      */
     public T get(int index) {
         this.checkIndex(index);
-        return this.elements[index];
+        return this.data[index];
     }
 
     /**
@@ -89,8 +89,8 @@ public class DynamicArray<T> implements ListADT<T> {
      */
     public T set(int index, T value) {
         this.checkIndex(index);
-        T previousValue = this.elements[index];
-        this.elements[index] = value;
+        T previousValue = this.data[index];
+        this.data[index] = value;
         return previousValue;
     }
 
@@ -103,17 +103,17 @@ public class DynamicArray<T> implements ListADT<T> {
      */
     public void add (int index, T value) {
         this.checkIndexInclusive(index);
-        if (this.size < this.elements.length) { // if capacity increase not needed, shift elements over w/o replacing array
+        if (this.size < this.data.length) { // if capacity increase not needed, shift elements over w/o replacing array
             for (int i = this.size() - 1; i >= index; i--) {
-                this.elements[i + 1] = this.elements[i];
+                this.data[i + 1] = this.data[i];
             }
-            this.elements[index] = value;
-        } else { // replace array if needed
-            T[] temp = makeArray(this.elements.length + 1);
+            this.data[index] = value;
+        } else { // replace array if needed, and copy elements over
+            T[] temp = makeArray(this.data.length + 1);
             this.copyElements(temp, 0, index, 0);
             temp[index] = value;
             this.copyElements(temp, index, this.size(), 1);
-            this.elements = temp;
+            this.data = temp;
         }
         this.size += 1; // update size attribute
     }
@@ -136,9 +136,9 @@ public class DynamicArray<T> implements ListADT<T> {
      */
     public T remove(int index) {
         this.checkIndex(index);
-        T removedElement = this.elements[index];
-        this.copyElements(this.elements, index + 1, this.size(), -1); // shift elements to the left
-        this.elements[this.size() - 1] = null;
+        T removedElement = this.data[index];
+        this.copyElements(this.data, index + 1, this.size(), -1); // shift elements to the left
+        this.data[this.size() - 1] = null;
         this.size -= 1; // update size attribute
         return removedElement;
     }
@@ -153,9 +153,9 @@ public class DynamicArray<T> implements ListADT<T> {
         if (this.isEmpty()) {
             formattedList = "[]";
         } else {
-            formattedList = "[" + this.elements[0];
+            formattedList = "[" + this.data[0];
             for (int i = 1; i < this.size(); i++) {
-                formattedList += (", " + this.elements[i]);
+                formattedList += (", " + this.data[i]);
             }
             formattedList += "]";
         }
@@ -289,64 +289,5 @@ public class DynamicArray<T> implements ListADT<T> {
         for (int i = fromIndex; i < toIndex; i++) {
             array[i + shift] = this.get(i);
         }
-    }
-
-    public static void main(String[] args) {
-        DynamicArray<Integer> array = new DynamicArray<Integer>(3);
-        System.out.println(array);
-        System.out.println("size: " + array.size() + ", empty: " + array.isEmpty());
-
-        System.out.println("\nAdding items...");
-        array.add(1);
-        array.add(1,3);
-        array.add(1,2);
-        array.add(3,4);
-        System.out.println(array);
-        System.out.println("size: " + array.size() + ", empty: " + array.isEmpty());
-
-        System.out.println("Item at index 1: " + array.get(1));
-        System.out.println("Item at index 3: " + array.get(3));
-
-        System.out.println("\nSetting index 2 to 10");
-        array.set(2,10);
-        System.out.println(array);
-        System.out.println("size: " + array.size() + ", empty: " + array.isEmpty());
-
-        System.out.println("\nRemoving " + array.remove(3));
-        System.out.println("Removing " + array.remove(0));
-        System.out.println(array);
-        System.out.println("size: " + array.size() + ", empty: " + array.isEmpty());
-
-        DynamicArray<Integer> copyArray = new DynamicArray<Integer>(array);
-        System.out.println("\nCopy: " + copyArray);
-        System.out.println("Changing copy to all zeros...");
-        copyArray.set(0,0);
-        copyArray.set(1,0);
-        System.out.println("Copy: " + copyArray);
-        System.out.println("Original: " + array);
-
-        System.out.println("\nTesting whole array operations");
-        DynamicArray<String> array1 = new DynamicArray<String>(1);
-        array1.add("a");
-        array1.add("b");
-        array1.add("c");
-        array1.add("d");
-        array1.add("e");
-        System.out.println("Array 1: " + array1);
-        DynamicArray<String> array2 = new DynamicArray<String>(1);
-        array2.add("A");
-        array2.add("B");
-        array2.add("C");
-        array2.add("D");
-        array2.add("E");
-        System.out.println("Array 2: " + array2);
-        System.out.println("Appending 2 onto 1: " + array1.append(array2));
-        System.out.println("Inserting 2 into 1 at index 3: " + array1.addAll(3, array2));
-        System.out.println("Indices 3 and later: " + array1.splitSuffix(3));
-        System.out.println("Indices before 3: " + array1.splitPrefix(3));
-        System.out.println("Deleting indices 1 up to 4: " + array1.delete(1, 4));
-        System.out.println("Extracting indices 1 up to 4: " + array1.extract(1, 4));
-
-        System.out.println("\nChecking originals are unchanged: Array 1 = " + array1 + ", Array 2 = " + array2);
     }
 }
