@@ -483,7 +483,8 @@ public class DynamicArrayTest {
     }
 
     /**
-     * Tests that calling addAll() with index 0 results in concatenating the current array onto the passed array.
+     * Tests that calling addAll() with index 0 results in concatenating the current array 
+     * onto the passed array.
      */
     @Test
     public void testAddAllZero() {
@@ -492,7 +493,8 @@ public class DynamicArrayTest {
     }
 
     /**
-     * Tests that passing an array of size 1 into addAll() results in inserting the one element at the specified index.
+     * Tests that passing an array of size 1 into addAll() results in inserting the one 
+     * element at the specified index.
      */
     @Test
     public void testAddAllSingle() {
@@ -562,7 +564,8 @@ public class DynamicArrayTest {
     }
 
     /**
-     * Tests that splitSuffix() at a middle index returns an array with all elements starting at the split.
+     * Tests that splitSuffix() at a middle index returns an array with all elements 
+     * starting at the split.
      */
     @Test
     public void testSplitSuffixStandard() {
@@ -621,7 +624,8 @@ public class DynamicArrayTest {
     }
 
     /**
-     * Tests that splitPrefix() at a middle index returns an array with all elements before the split.
+     * Tests that splitPrefix() at a middle index returns an array with all 
+     * elements before the split.
      */
     @Test
     public void testSplitPrefixStandard() {

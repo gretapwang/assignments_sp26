@@ -46,7 +46,8 @@ public class DynamicArray<T> implements ListADT<T> {
     public DynamicArray(DynamicArray<T> original) {
         this.data = makeArray(original.size());
         this.size = original.size();
-        original.copyElements(this.data, 0, original.size(), 0); // sets all elements of original into backing array of copy
+        original.copyElements(this.data, 0, original.size(), 0);
+        // sets all elements of original into backing array of copy
     }
 
     /**
@@ -103,7 +104,7 @@ public class DynamicArray<T> implements ListADT<T> {
      */
     public void add (int index, T value) {
         this.checkIndexInclusive(index);
-        if (this.size < this.data.length) { // if capacity increase not needed, shift elements over w/o replacing array
+        if (this.size < this.data.length) { // if sufficient capacity, shift elements over w/o replacing array
             for (int i = this.size() - 1; i >= index; i--) {
                 this.data[i + 1] = this.data[i];
             }
@@ -183,7 +184,8 @@ public class DynamicArray<T> implements ListADT<T> {
      */
     public DynamicArray<T> addAll(int index, DynamicArray<T> array2) {
         this.checkIndexInclusive(index);
-        DynamicArray<T> newArray = new DynamicArray<T>(this); // copy the current DynamicArray, then add elements from the other
+        // copy the current DynamicArray, then add elements from the other
+        DynamicArray<T> newArray = new DynamicArray<T>(this);
         for (int i = 0; i < array2.size(); i++) {
             newArray.add(index + i, array2.get(i));
         }
@@ -191,7 +193,8 @@ public class DynamicArray<T> implements ListADT<T> {
     }
 
     /**
-     * Returns a DynamicArray containing the elements of the current DynamicArray at the specified index and later.
+     * Returns a DynamicArray containing the elements of the current DynamicArray 
+     * at the specified index and later.
      * 
      * @param index The index to split at
      * @return The later section of the list
@@ -203,7 +206,8 @@ public class DynamicArray<T> implements ListADT<T> {
     }
 
     /**
-     * Returns a DynamicArray containing the elements of the current DynamicArray up to the specified index, exclusive.
+     * Returns a DynamicArray containing the elements of the current DynamicArray 
+     * up to the specified index, exclusive.
      * 
      * @param index The index to split at
      * @return The first section of the list
@@ -215,8 +219,8 @@ public class DynamicArray<T> implements ListADT<T> {
     }
 
     /**
-     * Returns a DynamicArray containing the elements of the current DynamicArray, except for those in the specified range, 
-     * inclusive to exclusive.
+     * Returns a DynamicArray containing the elements of the current DynamicArray, 
+     * except for those in the specified range, inclusive to exclusive.
      * 
      * @param fromIndex The starting index for the deleted range, included
      * @param toIndex The ending index for the deleted range, excluded
@@ -280,10 +284,12 @@ public class DynamicArray<T> implements ListADT<T> {
      * @param fromIndex The starting index in the DynamicArray for the copied range, included
      * @param toIndex The ending index in the DynamicArray for the copied range, excluded
      * @param shift The change in each element's index between the DynamicArray and the passed array
-     * @throws IndexOutOfBoundsException If the original index range is invalid for the DynamicArray, or the shifted range is invalid for the array
+     * @throws IndexOutOfBoundsException If the original index range is invalid for the DynamicArray, 
+     * or the shifted range is invalid for the array
      */
     private void copyElements(T[] array, int fromIndex, int toIndex, int shift) {
-        if (fromIndex < 0 || fromIndex > toIndex || toIndex > this.size() || fromIndex + shift < 0 || toIndex + shift > array.length) {
+        if (fromIndex < 0 || fromIndex > toIndex || toIndex > this.size() 
+            || fromIndex + shift < 0 || toIndex + shift > array.length) {
             throw new IndexOutOfBoundsException();
         }
         for (int i = fromIndex; i < toIndex; i++) {
