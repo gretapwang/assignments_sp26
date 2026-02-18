@@ -1,6 +1,6 @@
 /**
  * Interface to describe a list, which stores objects in an ordered sequence. The order cannot change on its own.
- * To initialize a list, we need to specify the type of its elements and an initial capacity.
+ * To initialize a list, we need to specify the type of its elements.
  * Lists are created empty. We can then add any number of elements.
  */
 interface ListADT<T> {
