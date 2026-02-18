@@ -204,7 +204,7 @@ public class SLL<T> implements ListADT<T>, NodeBasedOps<T> {
      * @param v Item to insert 
      */
     public void addFirst(T v) {
-        this.head = new NodeSL<T>(v, this.head); // add to start by updating head
+        this.head = new NodeSL<T>(v, this.head);
         this.size += 1;
     }
 
@@ -214,12 +214,7 @@ public class SLL<T> implements ListADT<T>, NodeBasedOps<T> {
      * @param v Item to insert 
      */
     public void addLast(T v) {
-        if (this.isEmpty()) { // if empty, adding first and last are the same 
-            this.addFirst(v);
-        } else { // set tail to point to a new node
-            this.getTail().setNext(new NodeSL<T>(v, null));
-            this.size += 1;
-        }
+        this.addAfter(this.getTail(), v);
     }
 
     /**
@@ -243,14 +238,10 @@ public class SLL<T> implements ListADT<T>, NodeBasedOps<T> {
      * @throws IllegalStateException If the list is empty
      */
     public T removeLast() {
-        this.checkNonEmpty();
         if (this.size() == 1) { // if size = 1, removing first and last are the same
             return this.removeFirst();
-        } else {
-            T value = this.getTail().getData();
-            this.getNode(size - 2).setNext(null); // set second to last node to point to null
-            this.size -= 1;
-            return value;
+        } else { // remove after 2nd-to-last node, if it exists
+            return this.removeAfter(this.getNode(size - 2)); // removeAfter() throws exception for empty list
         }
     }
 
@@ -265,7 +256,8 @@ public class SLL<T> implements ListADT<T>, NodeBasedOps<T> {
         if (here == null) { // add at head
             this.addFirst(v);
         } else {
-            here.setNext(new NodeSL<T>(v, here.getNext())); // create new node after here
+            NodeSL<T> newNode = new NodeSL<T>(v, here.getNext());
+            here.setNext(newNode);
             this.size += 1;
         }
     }
@@ -302,7 +294,7 @@ public class SLL<T> implements ListADT<T>, NodeBasedOps<T> {
     public SLL(SLL<T> other) {
         this();
         for (NodeSL<T> item = other.getHead(); item != null; item = item.getNext()) {
-            this.addLast(item.getData()); // addLast() makes new nodes with the same data
+            this.addLast(item.getData());
         }
     }
 }
