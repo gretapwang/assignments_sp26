@@ -8,7 +8,7 @@ import java.util.Iterator;
  * @author Greta Wang
  * @version Spring 2026
  */
-public class SLL<T> implements Iterable<T> {
+public class SLL<T> implements ListADT<T>, Iterable<T> {
 
     private NodeSL<T> head; // first node in the list
     private int size; // number of items

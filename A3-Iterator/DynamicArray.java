@@ -7,7 +7,7 @@ import java.util.Iterator;
  * @param <T> The type of element stored in the list. Can be any Object
  * @author Greta Wang
  */
-public class DynamicArray<T> implements Iterable<T> {
+public class DynamicArray<T> implements ListADT<T>, Iterable<T> {
 
     private T[] data; // Array used to store the elements
     private int size; // Number of elements
