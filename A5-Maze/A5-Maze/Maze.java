@@ -15,39 +15,44 @@ public class Maze implements DisplayableMaze {
   private MazeLocation finish;
 
   /**
-   * Constructor creates an empty maze of the specified dimensions.
+   * Constructor encodes data from the given file into a maze.
    * 
-   * @param height Maze height
-   * @param width Maze width
-   * @throws IllegalArgumentException If height and width are not both positive
+   * @param fname Name of file to read
+   * @throws IllegalArgumentException If file is malformed
    */
-  public Maze(int height, int width) {
-    if (height <= 0 || width <= 0) {
-      throw new IllegalArgumentException("Maze must have positive height and width");
-    }
-    this.mazeGrid = new MazeContents[height][width];
-    this.height = height;
-    this.width = width;
-    this.start = null;
-    this.finish = null;
-  }
-
   public Maze(String fname) {
     this.setDimensions(fname);
-    
+    Scanner file = SolveMaze.readMaze(fname);
+    int i = 0; // row index i
+    while (file.hasNextLine()) {
+      String line = file.nextLine();
+      for (int j = 0; j < line.length(); j++) { // column index j
+        char token = line.charAt(j);
+        if (token == 'S') { // start
+          this.initStart(i, j);
+        } else if (token == 'F') { // finish
+          this.initFinish(i, j);
+        } else {
+          this.mazeGrid[i][j] = charToContents(token); // walls and open spaces
+        }
+      }
+      i++;
+    }
+    if (this.start == null) {
+      throw new IllegalArgumentException("Missing start point.");
+    }
+    if (this.finish == null) {
+      throw new IllegalArgumentException("Missing end point.");
+    }
   }
 
   /**
-   * Overloaded constructor creates empty maze with dimensions 0 and other fields null.
+   * Sets maze dimensions to match the given file.
+   * Creates empty 2D backing array.
+   * 
+   * @param fname Name of file to read
+   * @throws IllegalArgumentException If file is empty or lines vary in width
    */
-  public Maze() {
-    this.mazeGrid = null;
-    this.height = 0;
-    this.width = 0;
-    this.start = null;
-    this.finish = null;
-  }
-
   private void setDimensions(String fname) {
     Scanner file = SolveMaze.readMaze(fname);
     int height = 0;
@@ -67,6 +72,55 @@ public class Maze implements DisplayableMaze {
     this.height = height;
     this.width = width;
     this.mazeGrid = new MazeContents[height][width];
+  }
+
+  /**
+   * Sets the given coordinates as the start point, or throws exception if start already exists.
+   * 
+   * @param i Row
+   * @param j Column
+   * @throws IllegalArgumentException If maze already has a start
+   * @throws ArrayIndexOutOfBoundsException If coordinates are out of bounds
+   */
+  private void initStart(int i, int j) {
+    if (this.start != null) {
+      throw new IllegalArgumentException("Maze cannot have multiple start points.");
+    }
+    this.mazeGrid[i][j] = MazeContents.OPEN;
+    this.start = new MazeLocation(i, j);
+  }
+
+  /**
+   * Sets the given coordinates as the end point, or throws exception if end already exists.
+   * 
+   * @param i Row
+   * @param j Column
+   * @throws IllegalArgumentException If maze already has an end
+   * @throws ArrayIndexOutOfBoundsException If coordinates are out of bounds
+   */
+  private void initFinish(int i, int j) {
+    if (this.finish != null) {
+      throw new IllegalArgumentException("Maze cannot have multiple end points.");
+    }
+    this.mazeGrid[i][j] = MazeContents.OPEN;
+    this.finish = new MazeLocation(i, j);
+  }
+
+  /**
+   * Returns the MazeContents associated with the given character ('#', '.', or ' ').
+   * 
+   * @param character Character from file
+   * @return Contents to encode in maze
+   * @throws IllegalArgumentException If given an unsupported character
+   */
+  private static MazeContents charToContents(char character) {
+    if (character == '#') {
+      return MazeContents.WALL;
+    } else if (character == '.' || character == ' ') {
+      return MazeContents.OPEN;
+    } else {
+      throw new IllegalArgumentException("File contains invalid characters.");
+    }
   }
 
   /**
@@ -137,34 +191,12 @@ public class Maze implements DisplayableMaze {
   }
 
   /**
-   * Sets the given location to be the start.
-   * 
-   * @param newStart Location to set as start
-   * @throws ArrayIndexOutOfBoundsException If location out of bounds
-   */
-  public void setStart(MazeLocation newStart) {
-    this.setContents(newStart, MazeContents.OPEN);
-    this.start = newStart;
-  }
-
-  /**
    * Getter for finish.
    * 
    * @return Finish location
    */
   public MazeLocation getFinish() {
     return this.finish;
-  }
-
-  /**
-   * Sets the given location to be the finish.
-   * 
-   * @param newFinish Location to set as finish
-   * @throws ArrayIndexOutOfBoundsException If location out of bounds
-   */
-  public void setFinish(MazeLocation newFinish) {
-    this.setContents(newFinish, MazeContents.OPEN);
-    this.finish = newFinish;
   }
 
     /** This DemoMaze method will allow you to generate a simple maze
