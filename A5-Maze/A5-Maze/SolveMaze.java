@@ -44,8 +44,8 @@ class SolveMaze {
     }
     // recursive step:
     maze.setContents(current, MazeContents.VISITED);
-    if ((solve(maze, current.neighbor(MazeDirection.NORTH)) || solve(maze, current.neighbor(MazeDirection.SOUTH)))
-        || (solve(maze, current.neighbor(MazeDirection.EAST)) || solve(maze, current.neighbor(MazeDirection.WEST)))) {
+    if (solve(maze, current.neighbor(MazeDirection.NORTH)) || solve(maze, current.neighbor(MazeDirection.SOUTH))
+        || solve(maze, current.neighbor(MazeDirection.EAST)) || solve(maze, current.neighbor(MazeDirection.WEST))) {
       maze.setContents(current, MazeContents.PATH);
       return true;
     }

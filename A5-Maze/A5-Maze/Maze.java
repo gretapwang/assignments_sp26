@@ -38,6 +38,7 @@ public class Maze implements DisplayableMaze {
       }
       i++;
     }
+    file.close();
     if (this.start == null) {
       throw new IllegalArgumentException("Missing start point.");
     }
@@ -66,6 +67,7 @@ public class Maze implements DisplayableMaze {
         throw new IllegalArgumentException("All rows in maze must have equal width.");
       }
     }
+    file.close();
     if (height <= 0 || width <= 0) {
       throw new IllegalArgumentException("Maze must have positive height and width");
     }
