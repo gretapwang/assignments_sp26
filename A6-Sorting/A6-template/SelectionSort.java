@@ -1,4 +1,8 @@
 public class SelectionSort {
+
+  public static CardPile sort(CardPile unsorted) {
+    return sort(unsorted, null);
+  }
   
   public static CardPile sort(CardPile unsorted, SortRecorder record) {
     
@@ -17,6 +21,8 @@ public class SelectionSort {
     //        record.add(sorted);   // the sorted pile
     //        record.add(unsorted); // the unsorted pile
     // ***********************************************************
+
+    
 
     // return the sorted result here
     return sorted;

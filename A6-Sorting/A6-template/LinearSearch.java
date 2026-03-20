@@ -1,3 +1,5 @@
+import java.util.Collections;
+
 public class LinearSearch {
 
   public static boolean search(CardPile cards, Card target) {
@@ -15,6 +17,38 @@ public class LinearSearch {
     // per comparison so the viewer shows the search progression.
     // ***********************************************************
 
+    if (record != null) {
+      record.add(cards);
+    }
+    CardPile checked = new CardPile();
+    while (cards.size() > 0) {
+      Card curr = cards.removeFirst();
+      checked.addLast(curr);
+      if (record != null) {
+        record.next();
+        record.add(cards);
+        record.add(checked);
+      }
+      if (curr.compareTo(target) == 0) {
+        return true;
+      }
+    }
     return false;
+  }
+
+  public static void main(String[] args) {
+    SortRecorder recorder = new SortRecorder();
+    Card.loadImages(recorder);
+    CardPile cards = new CardPile(Card.newDeck(true), 2, 2);
+    Card target = cards.getFirst();
+    // to make target not be in the the pile:
+    // cards.removeFirst();
+    Collections.shuffle(cards);
+    if (search(cards, target, recorder)) {
+      System.out.println(target + " found!");
+    } else {
+      System.out.println(target + " not found.");
+    }
+    recorder.display("Linear Search for " + target);
   }
 }
