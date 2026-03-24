@@ -1,30 +1,68 @@
+import java.util.Collections;
+import java.util.ListIterator;
+
+/**
+ * Sorts cards using selection sort.
+ * 
+ * @author Greta Wang
+ * @version Spring 2026
+ */
 public class SelectionSort {
 
+  /**
+   * Returns a sorted version of the given CardPile using selection sort.
+   * Original list is emptied.
+   * Does not record steps.
+   * 
+   * @param unsorted Cards to sort
+   * @return Sorted cards
+   */
   public static CardPile sort(CardPile unsorted) {
     return sort(unsorted, null);
   }
   
+  /**
+   * Returns a sorted version of the given CardPile using selection sort.
+   * Original list is emptied.
+   * Records steps in the given SortRecorder.
+   * 
+   * @param unsorted Cards to sort
+   * @param record Recorder
+   * @return Sorted cards
+   */
   public static CardPile sort(CardPile unsorted, SortRecorder record) {
-    
-    // register the starting configuration with the recorder
-    record.add(unsorted);
-
-    // Here is the result list you will be creating
+    LinearSearch.recordCurrStep(unsorted, record);
     CardPile sorted = new CardPile();
-  
-    // ***********************************************************
-    // Here is where you'll do the "work" of SelectionSort:
-    //   - Use sorted to store the "sorted portion"
-    //   - Don't forget to register the new state with the
-    //     recorder after each card is transferred:
-    //        record.next();        // tell it this is a new step
-    //        record.add(sorted);   // the sorted pile
-    //        record.add(unsorted); // the unsorted pile
-    // ***********************************************************
-
-    
-
-    // return the sorted result here
+    while (!unsorted.isEmpty()) {
+      ListIterator<Card> unsortedIter = unsorted.listIterator();
+      Card smallest = unsortedIter.next();
+      unsortedIter.remove();
+      while (unsortedIter.hasNext()) { // find smallest unsorted card
+        Card curr = unsortedIter.next();
+        if (curr.compareTo(smallest) < 0) { // pull out smallest found so far
+          unsortedIter.remove();
+          unsortedIter.add(smallest);
+          smallest = curr;
+        }
+      }
+      sorted.addLast(smallest);
+      LinearSearch.recordNewStep(sorted, unsorted, record);
+    }
     return sorted;
+  }
+
+  /**
+   * Demonstrates selection sort with card display.
+   * 
+   * @param args Command line arguments
+   */
+  public static void main(String[] args) {
+    SortRecorder recorder = new SortRecorder();
+    Card.loadImages(recorder);
+    CardPile cards = new CardPile(Card.newDeck(true), 2, 2);
+    Collections.shuffle(cards);
+    cards = sort(cards, recorder);
+    System.out.println(cards);
+    recorder.display("Selection Sort");
   }
 }
