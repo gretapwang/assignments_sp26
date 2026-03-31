@@ -52,31 +52,27 @@ public class DecisionTree extends BinaryTree<String> {
     }
 
     /**
-     * Returns the child corresponding to a yes/no choice represented by the given boolean.
+     * Returns the child specified by the given boolean.
      * 
-     * @param isYes True to answer yes, false for no
-     * @return Left child if yes, right child if no
+     * @param isLeft True to get left child, false to get right
+     * @return Left or right child
      */
-    public DecisionTree makeChoice(boolean isYes) {
-        if (isYes) {
+    public DecisionTree getChild(boolean isLeft) {
+        if (isLeft) {
             return this.getLeft();
-        } else {
-            return this.getRight();
         }
+        return this.getRight();
     }
 
     /**
      * Returns the child corresponding to a yes/no choice represented by the given char.
      * 
-     * @param choice Char 'Y' to answer yes, 'N' for no
+     * @param choice 'Y' for yes, 'N' for no
      * @return Left child if yes, right child if no
-     * @throws IllegalArgumentException If char is invalid
+     * @throws IllegalArgumentException If choice is an invalid character
      */
-    public DecisionTree makeChoice(char choice) {
-        if (choice != 'Y' && choice != 'N') {
-            throw new IllegalArgumentException("Invalid character.");
-        }
-        return makeChoice(choice == 'Y');
+    public DecisionTree getChild(char choice) {
+        return getChild(charToBool(choice));
     }
 
     /**
@@ -108,14 +104,28 @@ public class DecisionTree extends BinaryTree<String> {
     }
 
     /**
-     * Sets children as leaves storing the given data.
+     * Sets the child specified by the boolean to be a leaf storing the given data.
      * 
-     * @param lData Data for left child
-     * @param rData Data for right child
+     * @param data Data for new child
+     * @param isLeft True to set left child, false to set right
      */
-    public void setLeafChildren(String lData, String rData) {
-        this.setLeft(new DecisionTree(lData));
-        this.setRight(new DecisionTree(rData));
+    public void setLeafChild(String data, boolean isLeft) {
+        if (isLeft) {
+            this.setLeft(new DecisionTree(data));
+        } else {
+            this.setRight(new DecisionTree(data));
+        }
+    }
+
+    /**
+     * Sets the child corresponding to the given char to be a leaf storing the given data.
+     * 
+     * @param data Data for new child
+     * @param choice 'Y' to set left child, 'N' to set right
+     * @throws IllegalArgumentException If choice is an invalid character
+     */
+    public void setLeafChild(String data, char choice) {
+        this.setLeafChild(data, charToBool(choice));
     }
 
     /**
@@ -130,7 +140,25 @@ public class DecisionTree extends BinaryTree<String> {
         if (path.isEmpty()) { // base case
             return this;
         } 
-        return this.makeChoice(path.charAt(0)).followPath(path.substring(1));
+        // recursive step: move to the correct child, then call recursively to solve the rest
+        return this.getChild(path.charAt(0)).followPath(path.substring(1));
+    }
+
+    /**
+     * Returns the boolean value associated with a given character 'Y' or 'N'.
+     * 
+     * @param choice 'Y' or 'N'
+     * @return True for 'Y', false for 'N'
+     * @throws IllegalArgumentException If character is invalid
+     */
+    private static boolean charToBool(char choice) {
+        if (choice == 'Y') {
+            return true;
+        } else if (choice == 'N') {
+            return false;
+        } else {
+            throw new IllegalArgumentException("Path contains invalid characters.");
+        }
     }
 
     /**
@@ -142,11 +170,19 @@ public class DecisionTree extends BinaryTree<String> {
         try {
             PrintWriter out = new PrintWriter(new FileWriter(fileName));
             ArrayDeque<DecisionTree> nodes = new ArrayDeque<DecisionTree>();
-            nodes.add(this);
+            nodes.add(this); // initial node queue
             ArrayDeque<String> paths = new ArrayDeque<String>();
-            paths.add("");
-            while (!nodes.isEmpty()) {
-                out.println(nextFileLine(nodes, paths));
+            paths.add(""); // initial path queue
+            while (!nodes.isEmpty()) { // breadth-first algorithm
+                DecisionTree node = nodes.remove();
+                String path = paths.remove();
+                if (node.isBranch()) { // add children and their paths, if they exist
+                    nodes.add(node.getLeft());
+                    nodes.add(node.getRight());
+                    paths.add(path + "Y");
+                    paths.add(path + "N");
+                }
+                out.println(path + " " + node.getData());
             }
             out.close();
         } catch (Exception e) {
@@ -156,47 +192,25 @@ public class DecisionTree extends BinaryTree<String> {
     }
 
     /**
-     * Given a queue of tree nodes and a queue of paths, advances both queues one step in the 
-     * breadth-first traversal algorithm. 
-     * Returns the data corresponding to that step, formatted to write to a file.
-     * 
-     * @param nodes Queue of DecisionTree nodes
-     * @param paths Queue of Strings representing tree paths
-     * @return Next line of data to write to file
-     * @throws NoSuchElementException If either queue is empty
-     */
-    private static String nextFileLine(ArrayDeque<DecisionTree> nodes, ArrayDeque<String> paths) {
-        DecisionTree node = nodes.remove();
-        String path = paths.remove();
-        if (node.isBranch()) {
-            nodes.add(node.getLeft());
-            nodes.add(node.getRight());
-            paths.add(path + "Y");
-            paths.add(path + "N");
-        }
-        return path + " " + node.getData();
-    }
-
-    /**
      * Sets the tree's contents according to data from the given file name.
      * 
      * @param fileName Name of file to read from
      */
     public void populateFromFile(String fileName) {
-        Scanner file;
         try {
-            file = new Scanner(new File(fileName));
+            Scanner file = new Scanner(new File(fileName));
             while (file.hasNextLine()) {
                 String line = file.nextLine();
                 int spaceIndex = line.indexOf(' ');
-                this.setLeafOnPath(line.substring(0, spaceIndex), line.substring(spaceIndex + 1));
+                this.setPathEndPt(line.substring(0, spaceIndex), line.substring(spaceIndex + 1));
             }
             file.close();
-        } catch (FileNotFoundException e) {
-            System.err.println("Cannot locate file.");
-            System.exit(-1);  
         } catch (Exception e) {
-            System.err.println("Malformed file content.");
+            if (e instanceof FileNotFoundException) {
+                System.err.println("Cannot locate file.");
+            } else {
+                System.err.println("Malformed file content.");
+            }
             System.exit(-1); 
         }
     }
@@ -209,19 +223,12 @@ public class DecisionTree extends BinaryTree<String> {
      * @throws NullPointerException If parent of the desired node does not exist
      * @throws IllegalArgumentException If path contains invalid characters
      */
-    private void setLeafOnPath(String path, String data) {
+    private void setPathEndPt(String path, String data) {
         if (path.isEmpty()) {
             this.setData(data);
         } else {
             DecisionTree parent = this.followPath(path.substring(0, path.length() - 1));
-            char lastChar = path.charAt(path.length() - 1);
-            if (lastChar == 'Y') {
-                parent.setLeft(new DecisionTree(data));
-            } else if (lastChar == 'N') {
-                parent.setRight(new DecisionTree(data));
-            } else {
-                throw new IllegalArgumentException("Path contains invalid characters.");
-            }
+            parent.setLeafChild(data, path.charAt(path.length() - 1));
         }
     }
 
