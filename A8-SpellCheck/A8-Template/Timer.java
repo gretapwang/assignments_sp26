@@ -9,7 +9,7 @@ import java.util.Scanner;
  */
 public class Timer {
   private static final String DEFAULT_FILENAME = "words.txt";
-  private static final int REPEATS = 200;
+  private static final int REPEATS = 10;
 
   /**
    * Create a benchmark driver object.

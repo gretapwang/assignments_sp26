@@ -11,29 +11,29 @@ in your work, please indicate the status of each item.
 
 Assignment Points:
 
-_____ 1 pt: `Timer.java` runs and benchmarks `ListDictionary.contains(...)` and `HashSetDictionary.contains(...)`
+YES 1 pt: `Timer.java` runs and benchmarks `ListDictionary.contains(...)` and `HashSetDictionary.contains(...)`
 
-_____ 1 pt: Benchmark results are discussed in `README.md`
+YES 1 pt: Benchmark results are discussed in `README.md`
 
-_____ 1 pt: Loads and stores dictionary words in a chosen `Dictionary` implementation
+YES 1 pt: Loads and stores dictionary words in a chosen `Dictionary` implementation
 
-_____ 1 pt: Implements `containsWord` as specified
+YES 1 pt: Implements `containsWord` as specified
 
-_____ 5 pts: Implements `nearMisses` as specified, composed of:
+YES 5 pts: Implements `nearMisses` as specified, composed of:
 
-      _____ 1 pt: Suggests correct deletions
+      YES 1 pt: Suggests correct deletions
 
-      _____ 1 pt: Suggests correct insertions
+      YES 1 pt: Suggests correct insertions
 
-      _____ 1 pt: Suggests correct substitutions
+      YES 1 pt: Suggests correct substitutions
 
-      _____ 1 pt: Suggests correct transpositions
+      YES 1 pt: Suggests correct transpositions
 
-      _____ 1 pt: Suggests correct split words
+      YES 1 pt: Suggests correct split words
 
-_____ 1 pt: `nearMisses` returns a `Set<String>` with no duplicate suggestions
+YES 1 pt: `nearMisses` returns a `Set<String>` with no duplicate suggestions
 
-_____ 1 pt: SpellChecker includes the expected constructor/method helper and can be extended to check spelling in a file as described
+YES 1 pt: SpellChecker includes the expected constructor/method helper and can be extended to check spelling in a file as described
 
 (Note that in addition to the tests that you write, we will perform automated testing of our own on your submitted code.)
 
@@ -41,22 +41,22 @@ _____ 1 pt: SpellChecker includes the expected constructor/method helper and can
 
 ## General Items:
 
-_____ 4 pts: Programs compile without errors or warnings
+YES 4 pts: Programs compile without errors or warnings
 
-_____ 2 pts: Executes fully & consistently without crashing (exception/freeze)
+YES 2 pts: Executes fully & consistently without crashing (exception/freeze)
 
-_____ 2 pts: Complies with style guidelines (missing items 1 pt each):
+YES 2 pts: Complies with style guidelines (missing items 1 pt each):
 
-      _____ Classes & class members all have Javadoc header comments
+      YES Classes & class members all have Javadoc header comments
 
-      _____ Clear and consistent indentation of bracketed sections
+      YES Clear and consistent indentation of bracketed sections
 
-      _____ Adheres to Java conventions on naming & capitalization
+      YES Adheres to Java conventions on naming & capitalization
 
-      _____ Methods & variables all have clear and accurate names
+      YES Methods & variables all have clear and accurate names
 
-      _____ Methods avoid confusing side effects
+      YES Methods avoid confusing side effects
 
-_____ 1 pt: All required files included with submission (including completed checklist file)
+YES 1 pt: All required files included with submission (including completed checklist file)
 
-_____ 1 pt: `README.md` discusses benchmark results and data-structure choices
+YES 1 pt: `README.md` discusses benchmark results and data-structure choices

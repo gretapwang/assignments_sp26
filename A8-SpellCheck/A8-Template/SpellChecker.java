@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Run the spell checker from the command line.
@@ -33,10 +34,13 @@ public class SpellChecker {
    * Check one word and print the result.
    *
    * @param word the word to check
+   * @param printCorrectWords true to print result even when words are spelled correctly
    */
-  public void checkWord(String word) {
+  public void checkWord(String word, boolean printCorrectWords) {
     if (this.validator.containsWord(word)) {
-      System.out.println("'" + word + "' is spelled correctly.");
+      if (printCorrectWords) {
+        System.out.println("'" + word + "' is spelled correctly.");
+      }
     } else {
       System.out.println("Not found: " + word);
       System.out.println("  Suggestions: " + checkSpelling(word).get(word));
@@ -61,6 +65,21 @@ public class SpellChecker {
   }
 
   /**
+   * Reads all words from System.in and returns them as a set with no duplicates.
+   * 
+   * @return Words read from System.in
+   */
+  public static HashSet<String> readWords() {
+    Scanner s = new Scanner(System.in);
+    HashSet<String> words = new HashSet<String>();
+    while (s.hasNext()) {
+      words.add(s.next().toLowerCase().replaceAll("[^a-z]", "")); // make words identical to avoid duplicates
+    }
+    s.close();
+    return words;
+  }
+
+  /**
    * Launch the spell checker in argument mode or standard-input mode.
    *
    * A common approach is to make argument mode work first, then extend the
@@ -69,12 +88,15 @@ public class SpellChecker {
    * @param args command-line arguments to spell-check
    */
   public static void main(String[] args) {
-
-    // This code will analyze any words passed as command lines
     SpellChecker checker = new SpellChecker();
-
-    for (String word : args) {
-      checker.checkWord(word);
+    if (args.length > 0) {
+      for (String word : args) {
+        checker.checkWord(word, true);
+      }
+    } else {
+      for (String word : readWords()) {
+        checker.checkWord(word, false);
+      }
     }
   }
 }
